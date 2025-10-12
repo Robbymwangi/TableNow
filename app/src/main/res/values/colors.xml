@@ -9,4 +9,8 @@
     <color name="black">#FF000000</color>
     <color name="dark_navy_blue">#0D2A4F</color>
     <color name="almost_black">#1C1C1C</color>
+    <color name="light_grey_background">#F7F8FA</color>
+    <color name="inactive_icon_grey">#B0B0B0</color>
+    <color name="category_chip_background">#F0F0F0</color>
+    <color name="sidebar_active_item_background">#EAEBEE</color>
 </resources>
