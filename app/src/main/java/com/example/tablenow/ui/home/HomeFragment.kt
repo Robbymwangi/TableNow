@@ -52,8 +52,7 @@ class HomeFragment : Fragment() {
         val categories = listOf(
             Category("Pizza", R.drawable.ic_pizza_slice),
             Category("Burger", R.drawable.ic_burger),
-            Category("Vegan", R.drawable.ic_leaf),
-            Category("Greek", R.drawable.ic_greek_columns)
+            Category("Vegan", R.drawable.ic_leaf)
         )
 
         binding.categoriesRecyclerView.apply {

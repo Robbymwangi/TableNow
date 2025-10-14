@@ -22,4 +22,5 @@
     <color name="accent_color">#20C997</color>
     <color name="light_grey_background">#F5F5F5</color>
     <color name="primary_text_color">#212121</color>
+    <color name="shimmer_placeholder">#DDDDDD</color>
 </resources>
