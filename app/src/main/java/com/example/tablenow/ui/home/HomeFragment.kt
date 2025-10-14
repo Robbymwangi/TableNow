@@ -30,14 +30,17 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
+import kotlin.math.abs
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    // Add this member variable to store the reference to the profile avatar ImageView
+    // For profile avatar
     private var profileAvatarImageView: ShapeableImageView? = null
 
     override fun onCreateView(
@@ -52,15 +55,59 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set up all the RecyclerViews (Categories, Featured, etc.)
+        // 1. RecyclerViews + skeleton loaders
         setupRecyclerViews()
 
-        // Set up the Bottom Navigation, now that the side drawer is gone.
+        // 2. Status bar insets: ensure expanded title is pushed below the status bar
+        val headerContainer = view.findViewById<View>(R.id.headerContainer)
+        headerContainer?.let { hc ->
+            ViewCompat.setOnApplyWindowInsetsListener(hc) { v, insets ->
+                val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                val extraTop = dpToPx(8) // a little breathing room
+                v.updatePadding(top = statusBarHeight + extraTop)
+                insets
+            }
+            hc.requestApplyInsets()
+        }
+
+        // 3. AppBar scroll behavior: cross-fade between expandedTitle (center) and CollapsingToolbarLayout title (collapsed / left)
+        val appBar = view.findViewById<AppBarLayout>(R.id.appBarLayout)
+        val expandedTitle = view.findViewById<TextView>(R.id.expandedTitle)
+        val collapsing = view.findViewById<com.google.android.material.appbar.CollapsingToolbarLayout>(R.id.collapsingToolbarLayout)
+
+        // ensure no collapsed title initially
+        collapsing.title = " " // blank while expanded
+
+        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val totalRange = appBarLayout.totalScrollRange.takeIf { it > 0 } ?: 1
+            val collapseFraction = abs(verticalOffset).toFloat() / totalRange.toFloat()
+
+            // When mostly collapsed: show toolbar title and hide expanded title (fade)
+            if (collapseFraction >= 0.65f) {
+                // Set the collapsing toolbar title (left, collapsed)
+                if (collapsing.title == " ") {
+                    collapsing.title = "Discover places and restaurants"
+                }
+                // fade out expanded title
+                if (expandedTitle.alpha > 0f) {
+                    expandedTitle.animate().alpha(0f).setDuration(150).start()
+                }
+            } else {
+                // Expanded: clear collapsed title and fade in expanded title
+                if (collapsing.title != " ") {
+                    collapsing.title = " "
+                }
+                if (expandedTitle.alpha < 1f) {
+                    expandedTitle.animate().alpha(1f).setDuration(150).start()
+                }
+            }
+        })
+
+        // 4. Bottom navigation setup
         setupBottomNavigation()
     }
 
     private fun setupRecyclerViews() {
-        // 1. Categories RecyclerView
         val categories = listOf(
             Category("Pizza", R.drawable.ic_pizza_slice),
             Category("Burger", R.drawable.ic_burger_outline),
@@ -72,7 +119,6 @@ class HomeFragment : Fragment() {
             adapter = CategoryAdapter(categories)
         }
 
-        // 2. Set up initial skeleton loaders for a better loading experience
         binding.featuredRecyclerView.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = SkeletonAdapter(5)
@@ -82,48 +128,43 @@ class HomeFragment : Fragment() {
             adapter = SkeletonAdapter(5)
         }
 
-        // 3. Simulate a network call and load the real data
         Handler(Looper.getMainLooper()).postDelayed({
-            // Click listener for navigating to the detail screen with a shared element transition
             val onCardClick = { card: InfoCard, imageView: ImageView ->
                 val extras = FragmentNavigatorExtras(imageView to imageView.transitionName)
                 findNavController().navigate(
-                    R.id.action_nav_home_to_restaurantDetailFragment, // Ensure this action is in your nav_graph.xml
+                    R.id.action_nav_home_to_restaurantDetailFragment,
                     null,
                     null,
                     extras
                 )
             }
 
-            // Populate "Featured" section
             val featuredCards = listOf(
                 InfoCard("The Talisman Restaurant", "Fine Dining · Karen", "4.8", "https://picsum.photos/400/300?random=1", true),
                 InfoCard("About Thyme", "Continental · Westlands", "4.7", "https://picsum.photos/400/300?random=2", true),
-                InfoCard("Tamarind Tree Hotel", "Modern African · Lang\'ata", "4.9", "https://picsum.photos/400/300?random=3", true),
-                InfoCard("The Carnivore", "Nyama Choma · Lang\'ata", "4.5", "https://picsum.photos/400/300?random=4", true),
+                InfoCard("Tamarind Tree Hotel", "Modern African · Lang'ata", "4.9", "https://picsum.photos/400/300?random=3", true),
+                InfoCard("The Carnivore", "Nyama Choma · Lang'ata", "4.5", "https://picsum.photos/400/300?random=4", true),
                 InfoCard("Fogo Gaucho", "Brazilian Steakhouse · Kilimani", "4.6", "https://picsum.photos/400/300?random=5", true)
             )
             binding.featuredRecyclerView.adapter = InfoCardAdapter(featuredCards, onCardClick)
 
-            // Populate "New on" section
             val newOnBookableCards = listOf(
-                InfoCard("CJ\'s Restaurant", "Cafe · Koinange St", "4.6", "https://picsum.photos/400/300?random=6"),
+                InfoCard("CJ's Restaurant", "Cafe · Koinange St", "4.6", "https://picsum.photos/400/300?random=6"),
                 InfoCard("Artcaffe", "Coffee & Bakery · The Hub", "4.5", "https://picsum.photos/400/300?random=7"),
                 InfoCard("Java House", "Coffee House · Mama Ngina St", "4.4", "https://picsum.photos/400/300?random=8"),
                 InfoCard("Big Square", "Fast Food · Westlands", "4.2", "https://picsum.photos/400/300?random=9"),
-                InfoCard("Mama Oliech\'s", "Local Cuisine · Hurlingham", "4.7", "https://picsum.photos/400/300?random=10")
+                InfoCard("Mama Oliech's", "Local Cuisine · Hurlingham", "4.7", "https://picsum.photos/400/300?random=10")
             )
             binding.newOnBookableRecyclerView.adapter = InfoCardAdapter(newOnBookableCards, onCardClick)
-        }, 2000) // 2-second delay to simulate loading
+        }, 2000)
     }
 
     private fun setupBottomNavigation() {
         val navController = findNavController()
-        customizeProfileTab(hasAvatar = false, initials = "JH") // Now customizeProfileTab will populate profileAvatarImageView
+        customizeProfileTab(hasAvatar = false, initials = "JH")
 
         binding.bottomNavView.setOnItemSelectedListener { item ->
-            // Use the stored profileAvatarImageView reference
-            profileAvatarImageView?.let { imageView -> // Safely access the ImageView
+            profileAvatarImageView?.let { imageView ->
                 when (item.itemId) {
                     R.id.nav_home -> {
                         updateProfileTabState(imageView, false)
@@ -141,7 +182,7 @@ class HomeFragment : Fragment() {
                     }
                     else -> false
                 }
-            } ?: false // If imageView is null, don't update state or navigate
+            } ?: false
         }
     }
 
@@ -152,28 +193,20 @@ class HomeFragment : Fragment() {
 
         val profileAvatar: ShapeableImageView = customLayout.findViewById(R.id.profile_avatar_image)
         val profileLabel: TextView = customLayout.findViewById(R.id.profile_label)
-
         profileLabel.text = "Profile"
 
         if (hasAvatar) {
-            profileAvatar.setImageResource(R.drawable.ic_user_profile) // Replace with actual avatar loading
+            profileAvatar.setImageResource(R.drawable.ic_user_profile)
         } else {
-            // Ensure width is set before drawing, or pass a default size
-            // For now, let's assume a default size for the drawable if the view hasn't been measured yet.
-            // A better approach might be to set a fixed size for the drawable or ensure layout happens.
-            val drawableSize = dpToPx(24) // Match the layout width/height
+            val drawableSize = dpToPx(24)
             profileAvatar.setImageDrawable(createInitialsDrawable(initials, drawableSize))
         }
 
         profileItem.removeAllViews()
         profileItem.addView(customLayout)
 
-        // Store the reference to the ShapeableImageView
         profileAvatarImageView = profileAvatar
 
-        // Set the initial state for the profile tab
-        // This makes sure the stroke is shown if the profile tab is the initially selected tab.
-        // If profile tab is not the default, you might remove this.
         val isProfileTabSelected = binding.bottomNavView.selectedItemId == R.id.nav_profile
         updateProfileTabState(profileAvatar, isProfileTabSelected)
     }
@@ -192,12 +225,10 @@ class HomeFragment : Fragment() {
         val canvas = Canvas(bitmap)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-        // Draw background circle
-        paint.color = ContextCompat.getColor(requireContext(), R.color.grey_300) // Or any other suitable background color
+        paint.color = ContextCompat.getColor(requireContext(), R.color.grey_300)
         canvas.drawCircle(sizePx / 2f, sizePx / 2f, sizePx / 2f, paint)
 
-        // Draw initials
-        paint.color = ContextCompat.getColor(requireContext(), R.color.almost_black) // Text color
+        paint.color = ContextCompat.getColor(requireContext(), R.color.almost_black)
         paint.textSize = (sizePx / 2.5f)
         paint.textAlign = Paint.Align.CENTER
 
@@ -217,6 +248,6 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        profileAvatarImageView = null // Clear the reference to avoid memory leaks
+        profileAvatarImageView = null
     }
 }
