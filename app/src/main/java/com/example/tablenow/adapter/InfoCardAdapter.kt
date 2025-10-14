@@ -10,7 +10,10 @@ import coil.load
 import com.example.tablenow.R
 import com.example.tablenow.model.InfoCard
 
-class InfoCardAdapter(private val infoCards: List<InfoCard>) : RecyclerView.Adapter<InfoCardAdapter.InfoCardViewHolder>() {
+class InfoCardAdapter(
+    private val infoCards: List<InfoCard>,
+    private val onClick: (InfoCard, ImageView) -> Unit
+) : RecyclerView.Adapter<InfoCardAdapter.InfoCardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoCardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.info_card, parent, false)
@@ -20,6 +23,10 @@ class InfoCardAdapter(private val infoCards: List<InfoCard>) : RecyclerView.Adap
     override fun onBindViewHolder(holder: InfoCardViewHolder, position: Int) {
         val infoCard = infoCards[position]
         holder.bind(infoCard)
+        holder.itemView.findViewById<ImageView>(R.id.restaurant_image).transitionName = "restaurant_image_${position}"
+        holder.itemView.setOnClickListener {
+            onClick(infoCard, holder.itemView.findViewById(R.id.restaurant_image))
+        }
     }
 
     override fun getItemCount(): Int = infoCards.size

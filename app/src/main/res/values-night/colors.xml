@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="almost_black">#121212</color>
+    <color name="navy">#0D2A4F</color>
+    <color name="dark_navy_blue">#0A213D</color>
+    <color name="grey_300">#424242</color>
+
+    <!-- Added missing colors for dark theme -->
+    <color name="inactive_icon_grey">#757575</color>
+    <color name="primary_color">#0D2A4F</color>
+    <color name="secondary_text_color">#BDBDBD</color>
+    <color name="category_chip_background">#333333</color>
+    <color name="accent_color">#20C997</color>
+    <color name="light_grey_background">#121212</color>
+    <color name="primary_text_color">#FFFFFF</color>
 </resources>
