@@ -25,7 +25,8 @@
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:statusBarScrim="@color/navy_blue"
-            app:contentScrim="@color/navy_blue">
+            app:contentScrim="@color/navy_blue"
+            app:titleEnabled="false" > <!-- Disable default title to handle custom logo -->
 
             <!-- headerContainer: runtime inset applied from Fragment -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,11 +36,24 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="24dp"
-                android:paddingTop="16dp"
+                android:paddingTop="12dp"
                 android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax">
+                >
 
-                <!-- Expanded centered title -->
+                <!-- TableNow Logo (Expanded State) -->
+                <TextView
+                    android:id="@+id/tableNowLogoExpanded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TableNow"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/poppins_bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:alpha="1" />
+
+                <!-- Expanded title -->
                 <TextView
                     android:id="@+id/expandedTitle"
                     android:layout_width="0dp"
@@ -48,24 +62,27 @@
                     android:textColor="@android:color/white"
                     android:textSize="28sp"
                     android:fontFamily="@font/poppins_bold"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:alpha="1"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tableNowLogoExpanded"
                     app:layout_constraintBottom_toTopOf="@+id/searchBarContainer"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintVertical_bias="0.45" />
+                    app:layout_constraintVertical_bias="0.4"
+                    app:layout_constraintVertical_chainStyle="packed"/>
 
                 <!-- Search bar below the title -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/searchBarContainer"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
-                    android:layout_marginTop="8dp"
                     android:background="@drawable/bg_search_bar_white"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/expandedTitle">
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/expandedTitle"
+                    app:layout_constraintVertical_bias="1.0">
 
                     <EditText
                         android:id="@+id/searchEditText"
@@ -101,7 +118,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:titleTextColor="@android:color/white" />
+                app:titleTextColor="@android:color/white"
+                >
+                <!-- TableNow Logo (Collapsed State) -->
+                <TextView
+                    android:id="@+id/tableNowLogoCollapsed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TableNow"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="start|center_vertical"
+                    android:visibility="gone"
+                    />
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

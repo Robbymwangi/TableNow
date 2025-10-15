@@ -43,6 +43,13 @@ class HomeFragment : Fragment() {
     // For profile avatar
     private var profileAvatarImageView: ShapeableImageView? = null
 
+    private var initialLogoX = 0f
+    private var initialLogoY = 0f
+    private var targetLogoX = 0f
+    private var targetLogoY = 0f
+    private var logoDeltaX = 0f
+    private var logoDeltaY = 0f
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,8 +66,8 @@ class HomeFragment : Fragment() {
         setupRecyclerViews()
 
         // 2. Status bar insets: ensure expanded title is pushed below the status bar
-        val headerContainer = view.findViewById<View>(R.id.headerContainer)
-        headerContainer?.let { hc ->
+        val headerContainer = binding.headerContainer
+        headerContainer.let { hc ->
             ViewCompat.setOnApplyWindowInsetsListener(hc) { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
                 val extraTop = dpToPx(8) // a little breathing room
@@ -70,37 +77,51 @@ class HomeFragment : Fragment() {
             hc.requestApplyInsets()
         }
 
-        // 3. AppBar scroll behavior: cross-fade between expandedTitle (center) and CollapsingToolbarLayout title (collapsed / left)
-        val appBar = view.findViewById<AppBarLayout>(R.id.appBarLayout)
-        val expandedTitle = view.findViewById<TextView>(R.id.expandedTitle)
-        val collapsing = view.findViewById<com.google.android.material.appbar.CollapsingToolbarLayout>(R.id.collapsingToolbarLayout)
+        // 3. AppBar scroll behavior: cross-fade between expandedTitle, searchBar, and logo transformation
+        val appBar = binding.appBarLayout
+        val expandedTitle = binding.expandedTitle
+        val searchBarContainer = binding.searchBarContainer
+        val tableNowLogoExpanded = binding.tableNowLogoExpanded
+        val tableNowLogoCollapsed = binding.tableNowLogoCollapsed
+        val collapsingToolbarLayout = binding.collapsingToolbarLayout
 
-        // ensure no collapsed title initially
-        collapsing.title = " " // blank while expanded
+        // Use view.post to get accurate layout positions after views are laid out
+        view.post {
+            // Expanded logo's position relative to CollapsingToolbarLayout
+            val expandedLogoRect = Rect()
+            collapsingToolbarLayout.offsetDescendantRectToMyCoords(tableNowLogoExpanded, expandedLogoRect)
+            initialLogoX = expandedLogoRect.left.toFloat()
+            initialLogoY = expandedLogoRect.top.toFloat()
+
+            // Collapsed logo's position relative to CollapsingToolbarLayout
+            // Temporarily make it visible to get accurate bounds for measurement
+            val collapsedLogoRect = Rect()
+            collapsingToolbarLayout.offsetDescendantRectToMyCoords(tableNowLogoCollapsed, collapsedLogoRect)
+            targetLogoX = collapsedLogoRect.left.toFloat()
+            targetLogoY = collapsedLogoRect.top.toFloat()
+
+            logoDeltaX = targetLogoX - initialLogoX
+            logoDeltaY = targetLogoY - initialLogoY
+        }
 
         appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val totalRange = appBarLayout.totalScrollRange.takeIf { it > 0 } ?: 1
-            val collapseFraction = abs(verticalOffset).toFloat() / totalRange.toFloat()
+            val totalRange = appBarLayout.totalScrollRange.toFloat()
+            val collapseFraction = abs(verticalOffset) / totalRange
 
-            // When mostly collapsed: show toolbar title and hide expanded title (fade)
-            if (collapseFraction >= 0.65f) {
-                // Set the collapsing toolbar title (left, collapsed)
-                if (collapsing.title == " ") {
-                    collapsing.title = "Discover places and restaurants"
-                }
-                // fade out expanded title
-                if (expandedTitle.alpha > 0f) {
-                    expandedTitle.animate().alpha(0f).setDuration(150).start()
-                }
-            } else {
-                // Expanded: clear collapsed title and fade in expanded title
-                if (collapsing.title != " ") {
-                    collapsing.title = " "
-                }
-                if (expandedTitle.alpha < 1f) {
-                    expandedTitle.animate().alpha(1f).setDuration(150).start()
-                }
-            }
+            // Fade out expanded title and search bar
+            expandedTitle.alpha = 1 - collapseFraction
+            searchBarContainer.alpha = 1 - collapseFraction
+
+            // Animate translation and fade out of the expanded logo
+            tableNowLogoExpanded.translationX = logoDeltaX * collapseFraction
+            tableNowLogoExpanded.translationY = logoDeltaY * collapseFraction
+            tableNowLogoExpanded.alpha = 1 - collapseFraction
+
+            // Check if the AppBar is fully collapsed
+            val isCollapsed = abs(verticalOffset) == appBarLayout.totalScrollRange
+
+            // Show the collapsed logo in the toolbar ONLY when fully collapsed
+            tableNowLogoCollapsed.visibility = if (isCollapsed) View.VISIBLE else View.GONE
         })
 
         // 4. Bottom navigation setup
@@ -142,18 +163,18 @@ class HomeFragment : Fragment() {
             val featuredCards = listOf(
                 InfoCard("The Talisman Restaurant", "Fine Dining · Karen", "4.8", "https://picsum.photos/400/300?random=1", true),
                 InfoCard("About Thyme", "Continental · Westlands", "4.7", "https://picsum.photos/400/300?random=2", true),
-                InfoCard("Tamarind Tree Hotel", "Modern African · Lang'ata", "4.9", "https://picsum.photos/400/300?random=3", true),
-                InfoCard("The Carnivore", "Nyama Choma · Lang'ata", "4.5", "https://picsum.photos/400/300?random=4", true),
+                InfoCard("Tamarind Tree Hotel", "Modern African · Lang\'ata", "4.9", "https://picsum.photos/400/300?random=3", true),
+                InfoCard("The Carnivore", "Nyama Choma · Lang\'ata", "4.5", "https://picsum.photos/400/300?random=4", true),
                 InfoCard("Fogo Gaucho", "Brazilian Steakhouse · Kilimani", "4.6", "https://picsum.photos/400/300?random=5", true)
             )
             binding.featuredRecyclerView.adapter = InfoCardAdapter(featuredCards, onCardClick)
 
             val newOnBookableCards = listOf(
-                InfoCard("CJ's Restaurant", "Cafe · Koinange St", "4.6", "https://picsum.photos/400/300?random=6"),
+                InfoCard("CJ\'s Restaurant", "Cafe · Koinange St", "4.6", "https://picsum.photos/400/300?random=6"),
                 InfoCard("Artcaffe", "Coffee & Bakery · The Hub", "4.5", "https://picsum.photos/400/300?random=7"),
                 InfoCard("Java House", "Coffee House · Mama Ngina St", "4.4", "https://picsum.photos/400/300?random=8"),
                 InfoCard("Big Square", "Fast Food · Westlands", "4.2", "https://picsum.photos/400/300?random=9"),
-                InfoCard("Mama Oliech's", "Local Cuisine · Hurlingham", "4.7", "https://picsum.photos/400/300?random=10")
+                InfoCard("Mama Oliech\'s", "Local Cuisine · Hurlingham", "4.7", "https://picsum.photos/400/300?random=10")
             )
             binding.newOnBookableRecyclerView.adapter = InfoCardAdapter(newOnBookableCards, onCardClick)
         }, 2000)
