@@ -157,6 +157,7 @@ class HomeFragment : Fragment() {
                 val intent = Intent(requireContext(), RestaurantDetailActivity::class.java).apply {
                     putExtra("image_url", card.imageUrl)
                     putExtra("transition_name", transitionName)
+                    putExtra("restaurant_name", card.name) // <--- ADDED THIS LINE
                 }
                 val options = ActivityOptions.makeSceneTransitionAnimation(
                     requireActivity(),
@@ -169,18 +170,18 @@ class HomeFragment : Fragment() {
             val featuredCards = listOf(
                 InfoCard("The Talisman Restaurant", "Fine Dining · Karen", "4.8", "https://picsum.photos/400/300?random=1", true),
                 InfoCard("About Thyme", "Continental · Westlands", "4.7", "https://picsum.photos/400/300?random=2", true),
-                InfoCard("Tamarind Tree Hotel", "Modern African · Lang\'ata", "4.9", "https://picsum.photos/400/300?random=3", true),
-                InfoCard("The Carnivore", "Nyama Choma · Lang\'ata", "4.5", "https://picsum.photos/400/300?random=4", true),
+                InfoCard("Tamarind Tree Hotel", "Modern African · Lang'ata", "4.9", "https://picsum.photos/400/300?random=3", true),
+                InfoCard("The Carnivore", "Nyama Choma · Lang'ata", "4.5", "https://picsum.photos/400/300?random=4", true),
                 InfoCard("Fogo Gaucho", "Brazilian Steakhouse · Kilimani", "4.6", "https://picsum.photos/400/300?random=5", true)
             )
             binding.featuredRecyclerView.adapter = InfoCardAdapter(featuredCards, onCardClick)
 
             val newOnBookableCards = listOf(
-                InfoCard("CJ\'s Restaurant", "Cafe · Koinange St", "4.6", "https://picsum.photos/400/300?random=6"),
+                InfoCard("CJ's Restaurant", "Cafe · Koinange St", "4.6", "https://picsum.photos/400/300?random=6"),
                 InfoCard("Artcaffe", "Coffee & Bakery · The Hub", "4.5", "https://picsum.photos/400/300?random=7"),
                 InfoCard("Java House", "Coffee House · Mama Ngina St", "4.4", "https://picsum.photos/400/300?random=8"),
                 InfoCard("Big Square", "Fast Food · Westlands", "4.2", "https://picsum.photos/400/300?random=9"),
-                InfoCard("Mama Oliech\'s", "Local Cuisine · Hurlingham", "4.7", "https://picsum.photos/400/300?random=10")
+                InfoCard("Mama Oliech's", "Local Cuisine · Hurlingham", "4.7", "https://picsum.photos/400/300?random=10")
             )
             binding.newOnBookableRecyclerView.adapter = InfoCardAdapter(newOnBookableCards, onCardClick)
         }, 2000)
