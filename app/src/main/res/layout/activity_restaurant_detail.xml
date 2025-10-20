@@ -21,7 +21,8 @@
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            app:toolbarId="@+id/toolbar"
+            app:title=" ">
 
             <ImageView
                 android:id="@+id/hero_image"
@@ -32,6 +33,14 @@
                 app:layout_collapseMode="parallax"
                 tools:srcCompat="@drawable/placeholder_restaurant_image"
                 android:transitionName="restaurant_image_transition"/>
+
+            <!-- Dark gradient scrim for readability -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_scrim"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax" />
 
             <ImageButton
                 android:id="@+id/back_button"
@@ -71,9 +80,10 @@
                 android:id="@+id/restaurant_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Saint Germain Bistro"
+                android:text="The Talisman Restaurant"
                 android:fontFamily="@font/poppins_bold"
                 android:textSize="28sp"
+                android:textColor="@color/almost_black"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -110,26 +120,33 @@
                 app:cardCornerRadius="12dp"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_hours"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/dinner_menu_card"
+                app:layout_constraintEnd_toStartOf="@id/dinner_menu_card"
                 app:layout_constraintHorizontal_weight="1"
                 android:layout_marginEnd="8dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
                     <ImageView
+                        android:id="@+id/brunch_image"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/placeholder_menu_image"
                         android:contentDescription="@string/menu_card_image_description" />
 
+                    <!-- Dark overlay/scrim for text readability on image -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/gradient_menu_scrim" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:layout_gravity="bottom"
                         android:padding="8dp">
 
                         <TextView
@@ -137,16 +154,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Brunch menu"
-                            android:textColor="@color/almost_black"
+                            android:textColor="@android:color/white"
                             android:fontFamily="@font/poppins" />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_right_black"
+                            android:src="@drawable/ic_arrow_right_white"
                             android:contentDescription="@string/menu_card_image_description" />
                     </LinearLayout>
-                </LinearLayout>
+                </FrameLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -157,26 +174,33 @@
                 app:cardCornerRadius="12dp"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_hours"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/brunch_menu_card"
+                app:layout_constraintStart_toEndOf="@id/brunch_menu_card"
                 app:layout_constraintHorizontal_weight="1"
                 android:layout_marginStart="8dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
                     <ImageView
+                        android:id="@+id/dinner_image"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/placeholder_menu_image"
                         android:contentDescription="@string/menu_card_image_description" />
 
+                    <!-- Dark overlay/scrim for text readability on image -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/gradient_menu_scrim" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:layout_gravity="bottom"
                         android:padding="8dp">
 
                         <TextView
@@ -184,16 +208,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Dinner menu"
-                            android:textColor="@color/almost_black"
+                            android:textColor="@android:color/white"
                             android:fontFamily="@font/poppins" />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_right_black"
+                            android:src="@drawable/ic_arrow_right_white"
                             android:contentDescription="@string/menu_card_image_description" />
                     </LinearLayout>
-                </LinearLayout>
+                </FrameLayout>
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.button.MaterialButton
@@ -201,9 +225,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:minHeight="56dp"
                 android:text="@string/book_a_table"
                 android:backgroundTint="#1A746B"
                 app:cornerRadius="12dp"
+                android:fontFamily="@font/poppins_medium"
                 app:layout_constraintTop_toBottomOf="@id/brunch_menu_card"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
