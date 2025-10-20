@@ -17,7 +17,10 @@ class RestaurantDetailActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        // Set click listener for the custom back button ImageButton
+        binding.backButton.setOnClickListener { 
+            supportFinishAfterTransition() // Ensures shared element transition works on back press
+        }
 
         // Get data from intent
         val imageUrl = intent.getStringExtra("image_url")
