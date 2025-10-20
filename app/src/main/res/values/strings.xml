@@ -10,4 +10,8 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="back_button_content_description">Back</string>
+    <string name="menu_card_image_description">Menu image</string>
+    <string name="navigate_to_menu">Navigate to menu</string>
+    <string name="book_a_table">Book a table</string>
 </resources>

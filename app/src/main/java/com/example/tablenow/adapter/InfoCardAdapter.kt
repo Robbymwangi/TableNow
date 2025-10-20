@@ -4,15 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.tablenow.R
 import com.example.tablenow.model.InfoCard
+import android.widget.TextView 
 
 class InfoCardAdapter(
     private val infoCards: List<InfoCard>,
-    private val onClick: (InfoCard, ImageView) -> Unit
+    private val onClick: (InfoCard, ImageView, String) -> Unit 
 ) : RecyclerView.Adapter<InfoCardAdapter.InfoCardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoCardViewHolder {
@@ -23,9 +23,10 @@ class InfoCardAdapter(
     override fun onBindViewHolder(holder: InfoCardViewHolder, position: Int) {
         val infoCard = infoCards[position]
         holder.bind(infoCard)
-        holder.itemView.findViewById<ImageView>(R.id.restaurant_image).transitionName = "restaurant_image_${position}"
+        val transitionName = "restaurant_image_${position}" 
+        holder.itemView.findViewById<ImageView>(R.id.restaurant_image).transitionName = transitionName
         holder.itemView.setOnClickListener {
-            onClick(infoCard, holder.itemView.findViewById(R.id.restaurant_image))
+            onClick(infoCard, holder.itemView.findViewById(R.id.restaurant_image), transitionName) 
         }
     }
 

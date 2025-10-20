@@ -1,5 +1,7 @@
 package com.example.tablenow.ui.home
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -20,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tablenow.R
+import com.example.tablenow.RestaurantDetailActivity
 import com.example.tablenow.adapter.CategoryAdapter
 import com.example.tablenow.adapter.InfoCardAdapter
 import com.example.tablenow.adapter.SkeletonAdapter
@@ -150,14 +153,17 @@ class HomeFragment : Fragment() {
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val onCardClick = { card: InfoCard, imageView: ImageView ->
-                val extras = FragmentNavigatorExtras(imageView to imageView.transitionName)
-                findNavController().navigate(
-                    R.id.action_nav_home_to_restaurantDetailFragment,
-                    null,
-                    null,
-                    extras
+            val onCardClick = { card: InfoCard, imageView: ImageView, transitionName: String ->
+                val intent = Intent(requireContext(), RestaurantDetailActivity::class.java).apply {
+                    putExtra("image_url", card.imageUrl)
+                    putExtra("transition_name", transitionName)
+                }
+                val options = ActivityOptions.makeSceneTransitionAnimation(
+                    requireActivity(),
+                    imageView, // The view to transition
+                    transitionName // The transition name to match in the target activity
                 )
+                startActivity(intent, options.toBundle())
             }
 
             val featuredCards = listOf(
