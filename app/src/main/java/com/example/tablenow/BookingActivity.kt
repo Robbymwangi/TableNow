@@ -1,5 +1,6 @@
 package com.example.tablenow
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -38,18 +39,23 @@ class BookingActivity : AppCompatActivity() {
             val guests = binding.guestsEditText.text.toString()
             val date = selectedDateView?.text.toString()
             val time = selectedTimeView?.text.toString()
-            // ... do something with the data
+
+            // Create the intent to navigate to ConfirmationActivity
+            val intent = Intent(this, ConfirmationActivity::class.java)
+
+            // Pass the details to the next screen
+            intent.putExtra("GUESTS", guests)
+            intent.putExtra("DATE", date)
+            intent.putExtra("TIME", time)
+
+            // Launch the ConfirmationActivity
+            startActivity(intent)
         }
     }
 
     private fun setupInitialSelection() {
-        // Find the default selected date (12)
-        val day12 = binding.calendarGrid.findViewById<TextView>(R.id.day12)
-        selectDate(day12)
-
-        // Find the default selected time (21:30)
-        val time2130 = binding.timeButtonLayout.findViewById<Button>(R.id.time2130)
-        selectTime(time2130)
+        selectDate(binding.day12)
+        selectTime(binding.time2130)
     }
 
     private fun setupDateListeners() {
