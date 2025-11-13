@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:gravity="center_.vertical"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -100,6 +100,18 @@
                     android:textColor="@android:color/darker_gray"
                     tools:text="4 guests" />
             </LinearLayout>
+
+            <!-- ▼▼▼ THIS IS THE NEW BUTTON ▼▼▼ -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancelButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:text="Cancel Booking"
+                android:textColor="@color/design_default_color_error" />
+            <!-- ▲▲▲ END OF NEW BUTTON ▲▲▲ -->
 
         </LinearLayout>
     </LinearLayout>
