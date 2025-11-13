@@ -7,6 +7,7 @@ package com.example.tablenow
  * It's "backend-ready" and uses simple strings, which we can supply with mock data.
  */
 data class Booking(
+    val id: String,
     val title: String,
     val date: String,
     val time: String,
