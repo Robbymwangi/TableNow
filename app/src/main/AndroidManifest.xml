@@ -15,14 +15,9 @@
         android:theme="@style/Theme.TableNow">
         <activity
             android:name=".MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.TableNow.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".RestaurantDetailActivity"
@@ -38,6 +33,19 @@
             android:theme="@style/Theme.TableNow.NoActionBar" />
         <activity
             android:name=".CancelledActivity"
+            android:theme="@style/Theme.TableNow.NoActionBar" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TableNow.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false"
             android:theme="@style/Theme.TableNow.NoActionBar" />
     </application>
 
