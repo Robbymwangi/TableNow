@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.tablenow" />
-                  <option name="mobileSdkAppId" value="1:169415705115:android:501c7d00111daee3b6aebe" />
-                  <option name="projectId" value="tablenow-c3a0f" />
-                  <option name="projectNumber" value="169415705115" />
+                  <option name="mobileSdkAppId" value="1:668154401977:android:4b573c17572112ee7f3768" />
+                  <option name="projectId" value="gen-lang-client-0085873316" />
+                  <option name="projectNumber" value="668154401977" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

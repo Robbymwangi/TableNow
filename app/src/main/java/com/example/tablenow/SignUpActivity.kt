@@ -12,17 +12,23 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tablenow.databinding.ActivitySignUpBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         setupLoginLink()
         setupSignUpButton()
@@ -50,7 +56,7 @@ class SignUpActivity : AppCompatActivity() {
         if (loginStart != -1) {
             spannableString.setSpan(loginClickableSpan, loginStart, loginEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(StyleSpan(Typeface.BOLD), loginStart, loginEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#1A746B")), loginStart, loginEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(ForegroundColorSpan(getColor(R.color.teal_green)), loginStart, loginEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         binding.loginLink.text = spannableString
@@ -59,11 +65,34 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun setupSignUpButton() {
         binding.signUpButton.setOnClickListener {
-            // Implement your sign-up logic here
-            // For now, let's navigate to LoginActivity after successful sign-up
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish() // Finish SignUpActivity so user can't go back to it from LoginActivity
+            val email = binding.emailEditText.text.toString()
+            val password = binding.passwordEditText.text.toString()
+            val confirmPassword = binding.confirmPasswordEditText.text.toString()
+
+            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password != confirmPassword) {
+                Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign up success, navigate to Main Activity
+                        Toast.makeText(this, "Sign up successful!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // If sign up fails, display a message to the user.
+                        Toast.makeText(this, "Sign up failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
         }
     }
 }

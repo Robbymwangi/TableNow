@@ -7,18 +7,24 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tablenow.databinding.ActivityLoginBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         // Make the "Sign up" part of the text bold and colored
         val signUpText = "Don\'t have an account? Sign up"
@@ -35,10 +41,28 @@ class LoginActivity : AppCompatActivity() {
         binding.signUpLink.text = spannableString
 
         binding.loginButton.setOnClickListener {
-            // Navigate to MainActivity, which hosts HomeFragment as its start destination.
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish() // Finish LoginActivity so user can\'t go back to it
+            val email = binding.emailEditText.text.toString()
+            val password = binding.passwordEditText.text.toString()
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter email and password.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
         }
 
         binding.signUpLink.setOnClickListener {

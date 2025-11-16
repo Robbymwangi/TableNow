@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "169415705115",
-    "project_id": "tablenow-c3a0f",
-    "storage_bucket": "tablenow-c3a0f.firebasestorage.app"
+    "project_number": "668154401977",
+    "project_id": "gen-lang-client-0085873316",
+    "storage_bucket": "gen-lang-client-0085873316.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:169415705115:android:501c7d00111daee3b6aebe",
+        "mobilesdk_app_id": "1:668154401977:android:4b573c17572112ee7f3768",
         "android_client_info": {
           "package_name": "com.example.tablenow"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBPVL2MJd7bB4XJ39oLAfHn8z7w5D9sLUM"
+          "current_key": "AIzaSyCf294wDDyXfWEhIlg_ut-1FZf_egPlUdY"
         }
       ],
       "services": {
