@@ -27,6 +27,18 @@
         <activity
             android:name=".RestaurantDetailActivity"
             android:theme="@style/Theme.TableNow.NoActionBar" />
+        <activity
+            android:name=".BookingActivity"
+            android:theme="@style/Theme.TableNow.NoActionBar" />
+        <activity
+            android:name=".ConfirmationActivity"
+            android:theme="@style/Theme.TableNow.NoActionBar" />
+        <activity
+            android:name=".MybookingsActivity"
+            android:theme="@style/Theme.TableNow.NoActionBar" />
+        <activity
+            android:name=".CancelledActivity"
+            android:theme="@style/Theme.TableNow.NoActionBar" />
     </application>
 
 </manifest>
