@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.tablenow.databinding.ItemRestaurantBinding // This will show an error until you create item_restaurant.xml
+import com.example.tablenow.databinding.ItemRestaurantBinding
 
 class RestaurantAdapter(private val restaurantList: List<Restaurant>) :
     RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
@@ -23,7 +23,7 @@ class RestaurantAdapter(private val restaurantList: List<Restaurant>) :
         val restaurant = restaurantList[position]
 
         holder.binding.restaurantNameTextView.text = restaurant.name
-        holder.binding.cuisineTextView.text = restaurant.cuisine
+        holder.binding.ratingTextView.text = restaurant.rating // Updated to use ratingTextView and rating
         holder.binding.restaurantImageView.load(restaurant.imageUrl) {
             crossfade(true)
         }
