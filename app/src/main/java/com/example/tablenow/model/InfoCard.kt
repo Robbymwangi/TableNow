@@ -5,5 +5,5 @@ data class InfoCard(
     val category: String,
     val rating: String,
     val imageUrl: String,
-    val isFeatured: Boolean = false
+    val isFeatured: Boolean
 )
