@@ -28,29 +28,28 @@ class MainActivity : AppCompatActivity() {
 
         setupToolbarAnimation()
         setupBottomNavigation()
-        
+
         val data = getMockData()
         setupFeaturedList(data)
         setupNewList(data)
         setupCategoryList()
     }
 
-    // --- 1. THE ANIMATION LOGIC ---
     private fun setupToolbarAnimation() {
+        // Find the specific container in the XML
+        val headerContainer = binding.root.findViewById<View>(R.id.headerExpandedContainer)
+
         binding.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val totalScrollRange = appBarLayout.totalScrollRange
             val percentage = abs(verticalOffset).toFloat() / totalScrollRange.toFloat()
 
-            // 0.0 = Expanded (See "Discover")
-            // 1.0 = Collapsed (See "TableNow")
+            // Fade OUT the entire Big Header (TableNow + Discover)
+            headerContainer.alpha = 1f - percentage
 
-            // Fade OUT the Big Header
-            binding.tvHeaderExpanded.alpha = 1f - percentage
-            
-            // Fade IN the Toolbar Title (Starts appearing after 50% scroll)
-            if (percentage > 0.5f) {
-                // Map 0.5->1.0 to 0.0->1.0 for opacity
-                val fadeInAlpha = (percentage - 0.5f) * 2
+            // Fade IN the Toolbar Title "TableNow"
+            // We start the fade late (0.6) so it doesn't overlap immediately
+            if (percentage > 0.6f) {
+                val fadeInAlpha = (percentage - 0.6f) * 2.5f
                 binding.tvToolbarTitle.alpha = fadeInAlpha
             } else {
                 binding.tvToolbarTitle.alpha = 0f
@@ -59,14 +58,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupCategoryList() {
+        // Using standard system icons to ensure it runs without crashing
         val categories = listOf(
-            Category("Pizza", R.drawable.baseline_fastfood_24),
-            Category("Burger", R.drawable.baseline_local_pizza_24),
-            Category("Vegan", android.R.drawable.ic_menu_agenda),
-            Category("Greek", android.R.drawable.ic_menu_camera),
-            Category("Sushi", android.R.drawable.ic_menu_share)
+            Category("Pizza", android.R.drawable.ic_menu_compass),
+            Category("Burger", android.R.drawable.ic_menu_agenda),
+            Category("Vegan", android.R.drawable.ic_menu_gallery),
+            Category("Greek", android.R.drawable.ic_menu_directions),
+            Category("Sushi", android.R.drawable.ic_menu_view)
         )
-        
+
         val adapter = CategoryAdapter(categories)
         binding.rvCategories.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategories.adapter = adapter
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// --- SMALL DATA CLASS & ADAPTER FOR CATEGORIES ---
+// --- CATEGORY ADAPTER & MODEL ---
 
 data class Category(val name: String, val iconRes: Int)
 
