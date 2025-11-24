@@ -27,18 +27,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#0D1B3E"
-                android:paddingTop="60dp"
-                android:paddingBottom="30dp"
-                android:paddingHorizontal="16dp"
+                android:paddingTop="70dp"
+                android:paddingBottom="40dp"
+                android:paddingHorizontal="20dp"
                 app:layout_collapseMode="parallax">
 
                 <TextView
-                    android:id="@+id/tvSubtitle"
+                    android:id="@+id/tvHeaderExpanded"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Discover places and\nrestaurants"
                     android:textColor="@android:color/white"
-                    android:textSize="28sp"
+                    android:textSize="32sp"
+                    android:fontFamily="@font/poppins"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -50,18 +51,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:title="TableNow"
-                app:titleTextColor="@android:color/white">
+                app:contentInsetStart="0dp">
 
-                <ImageView
-                    android:id="@+id/ivSearchIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_menu_search"
-                    android:layout_gravity="end"
-                    android:paddingEnd="16dp"
-                    app:tint="@android:color/white" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
+                    <TextView
+                        android:id="@+id/tvToolbarTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TableNow"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/poppins"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:alpha="0"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <ImageView
+                        android:id="@+id/ivSearchIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@android:drawable/ic_menu_search"
+                        android:padding="16dp"
+                        app:tint="@android:color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -85,24 +107,30 @@
                 android:layout_height="wrap_content"
                 android:text="Categories"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:layout_marginStart="16dp"/>
 
-            <View
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCategories"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_margin="16dp"/>
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Featured this week"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="24dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvFeatured"
@@ -111,13 +139,14 @@
                 android:clipToPadding="false"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="12dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New on TableNow"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:layout_marginStart="16dp"
@@ -130,7 +159,7 @@
                 android:clipToPadding="false"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="12dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
