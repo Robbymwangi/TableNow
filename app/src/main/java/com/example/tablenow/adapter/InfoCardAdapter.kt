@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import com.bumptech.glide.Glide
 import com.example.tablenow.R
 import com.example.tablenow.model.InfoCard
-import android.widget.TextView 
+import android.widget.TextView
 
 class InfoCardAdapter(
     private val infoCards: List<InfoCard>,
-    private val onClick: (InfoCard, ImageView, String) -> Unit 
+    private val onClick: (InfoCard, ImageView, String) -> Unit
 ) : RecyclerView.Adapter<InfoCardAdapter.InfoCardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoCardViewHolder {
@@ -23,10 +23,10 @@ class InfoCardAdapter(
     override fun onBindViewHolder(holder: InfoCardViewHolder, position: Int) {
         val infoCard = infoCards[position]
         holder.bind(infoCard)
-        val transitionName = "restaurant_image_${position}" 
+        val transitionName = "restaurant_image_${position}"
         holder.itemView.findViewById<ImageView>(R.id.restaurant_image).transitionName = transitionName
         holder.itemView.setOnClickListener {
-            onClick(infoCard, holder.itemView.findViewById(R.id.restaurant_image), transitionName) 
+            onClick(infoCard, holder.itemView.findViewById(R.id.restaurant_image), transitionName)
         }
     }
 
@@ -40,10 +40,11 @@ class InfoCardAdapter(
         private val featuredChip: TextView = itemView.findViewById(R.id.featured_chip)
 
         fun bind(infoCard: InfoCard) {
-            restaurantImage.load(infoCard.imageUrl) {
-                crossfade(true)
-                placeholder(R.drawable.restaurant_placeholder)
-            }
+            Glide.with(itemView.context)
+                .load(infoCard.imageUrl)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_delete)
+                .into(restaurantImage)
             restaurantName.text = infoCard.name
             restaurantCategory.text = infoCard.category
             restaurantRating.text = infoCard.rating

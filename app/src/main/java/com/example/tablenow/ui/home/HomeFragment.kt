@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tablenow.Restaurant // Assumes Restaurant.kt exists
-import com.example.tablenow.RestaurantAdapter // Assumes RestaurantAdapter.kt exists
+import com.example.tablenow.model.InfoCard // Changed import to InfoCard
+import com.example.tablenow.adapter.InfoCardAdapter // Changed import to InfoCardAdapter
 import com.example.tablenow.databinding.FragmentHomeBinding
 import com.google.android.material.appbar.AppBarLayout
 import kotlin.math.abs
@@ -18,13 +18,13 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     // Adapters for each RecyclerView
-    private lateinit var featuredAdapter: RestaurantAdapter
-    private lateinit var newOnTableAdapter: RestaurantAdapter
+    private lateinit var featuredAdapter: InfoCardAdapter // Changed type to InfoCardAdapter
+    private lateinit var newOnTableAdapter: InfoCardAdapter // Changed type to InfoCardAdapter
     // private lateinit var categoryAdapter: CategoryAdapter // For future use
 
     // Separate lists for each section
-    private val featuredList = mutableListOf<Restaurant>()
-    private val newList = mutableListOf<Restaurant>()
+    private val featuredList = mutableListOf<InfoCard>() // Changed type to InfoCard
+    private val newList = mutableListOf<InfoCard>() // Changed type to InfoCard
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,13 +76,13 @@ class HomeFragment : Fragment() {
     // --- END OF NEW FUNCTION ---
 
     private fun setupFeaturedRecyclerView() {
-        featuredAdapter = RestaurantAdapter(featuredList)
+        featuredAdapter = InfoCardAdapter(featuredList, onClick = {_,_,_ ->}) // Changed to InfoCardAdapter and added dummy onClick
         binding.featuredRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.featuredRecyclerView.adapter = featuredAdapter
     }
 
     private fun setupNewOnRecyclerView() {
-        newOnTableAdapter = RestaurantAdapter(newList)
+        newOnTableAdapter = InfoCardAdapter(newList, onClick = {_,_,_ ->}) // Changed to InfoCardAdapter and added dummy onClick
         binding.newOnBookableRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.newOnBookableRecyclerView.adapter = newOnTableAdapter
     }
@@ -91,14 +91,14 @@ class HomeFragment : Fragment() {
         featuredList.clear()
         newList.clear()
 
-        val restaurant1 = Restaurant("res123", "The Gourmet Place", "Italian", "4.8", "https://picsum.photos/id/20/400/300")
-        val restaurant2 = Restaurant("res456", "Sizzling Grillhouse", "Steakhouse", "4.5", "https://picsum.photos/id/30/400/300")
-        val restaurant3 = Restaurant("res789", "Sushi Central", "Japanese", "4.9", "https://picsum.photos/id/40/400/300")
-        val restaurant4 = Restaurant("res101", "Pasta Paradise", "Italian", "4.6", "https://picsum.photos/id/50/400/300")
+        val infoCard1 = InfoCard("The Gourmet Place", "Italian", "4.8", "https://picsum.photos/id/20/400/300", isFeatured = true)
+        val infoCard2 = InfoCard("Sizzling Grillhouse", "Steakhouse", "4.5", "https://picsum.photos/id/30/400/300")
+        val infoCard3 = InfoCard("Sushi Central", "Japanese", "4.9", "https://picsum.photos/id/40/400/300", isFeatured = true)
+        val infoCard4 = InfoCard("Pasta Paradise", "Italian", "4.6", "https://picsum.photos/id/50/400/300", isFeatured = true)
 
 
-        featuredList.addAll(listOf(restaurant1, restaurant3, restaurant4))
-        newList.addAll(listOf(restaurant2, restaurant1))
+        featuredList.addAll(listOf(infoCard1, infoCard3, infoCard4))
+        newList.addAll(listOf(infoCard2, infoCard1))
 
         featuredAdapter.notifyDataSetChanged()
         newOnTableAdapter.notifyDataSetChanged()

@@ -51,6 +51,7 @@ dependencies {
     // Firebase Storage (if you host your images in Firebase)
     implementation(libs.firebase.storage.ktx)
 
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -62,7 +63,7 @@ dependencies {
     implementation("io.coil-kt:coil:2.7.0")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
-    testImplementation(libs.junit)
+    testImplementation(libs.junit.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
