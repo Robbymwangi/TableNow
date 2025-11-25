@@ -47,6 +47,10 @@
             android:name=".SignUpActivity"
             android:exported="false"
             android:theme="@style/Theme.TableNow.NoActionBar" />
+
+        <activity
+            android:name=".BookingDetailsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

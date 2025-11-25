@@ -21,8 +21,7 @@ class ConfirmationActivity : AppCompatActivity() {
         val time = intent.getStringExtra("TIME") ?: "19:00"
 
         // --- 2. DISPLAY MESSAGE ---
-        // Improved Grammar: Removed "on day" to make it sound more natural
-        val confirmationMessage = "You have successfully booked a table for $guests guests on $date at $time."
+        val confirmationMessage = "Your reservation is confirmed!."
 
         binding.confirmedText.text = confirmationMessage
 

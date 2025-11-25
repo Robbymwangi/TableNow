@@ -8,14 +8,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tablenow.databinding.ActivityBookingBinding
 import com.google.android.material.button.MaterialButton
-import java.util.Calendar // Needed for Date logic
+import java.util.Calendar
 
 class BookingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBookingBinding
     private var selectedTime: String? = null
-
-    // 1. ADD THIS VARIABLE to store the date
     private var selectedDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,32 +26,34 @@ class BookingActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { onBackPressed() }
 
-        // 2. SETUP DATE LOGIC
-        // Set default to "Today" so it's not empty if they don't click anything
+        // Date Logic
         val calendar = Calendar.getInstance()
         selectedDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
 
-        // Listen for clicks on the Calendar
         binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            // Note: Month is 0-indexed (0=Jan), so we add 1
             selectedDate = "$dayOfMonth/${month + 1}/$year"
         }
 
         setupTimeSlots()
 
+        // --- UPDATED VALIDATION LOGIC IS HERE ---
         binding.btnBookNow.setOnClickListener {
+            val guestInput = binding.etGuests.text.toString()
+            // Convert text to a number safely. If it's empty or invalid, treat it as 0.
+            val guestCount = guestInput.toIntOrNull() ?: 0
+
             if (selectedTime == null) {
                 Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show()
+            } else if (guestCount < 1) {
+                // This blocks 0, negative numbers, or empty inputs
+                Toast.makeText(this, "Please enter at least 1 guest", Toast.LENGTH_SHORT).show()
             } else {
-                val guests = binding.etGuests.text.toString()
+                // Success! Proceed to next screen
                 val intent = Intent(this, ConfirmationActivity::class.java)
                 intent.putExtra("RESTAURANT_NAME", restaurantName)
-                intent.putExtra("GUESTS", guests)
+                intent.putExtra("GUESTS", guestInput)
                 intent.putExtra("TIME", selectedTime)
-
-                // 3. PASS THE DATE HERE
                 intent.putExtra("DATE", selectedDate)
-
                 startActivity(intent)
             }
         }

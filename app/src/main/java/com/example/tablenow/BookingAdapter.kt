@@ -1,19 +1,30 @@
 package com.example.tablenow
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.tablenow.databinding.ItemBookingBinding
 import com.example.tablenow.model.Booking
 
 class BookingAdapter(
-    private var bookingList: List<Booking>
+    private var bookingList: List<Booking>,
+    private val onBookingClick: (Booking) -> Unit // Add click listener to constructor
 ) : RecyclerView.Adapter<BookingAdapter.BookingViewHolder>() {
 
     inner class BookingViewHolder(val binding: ItemBookingBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+        init {
+            // Set click listener on the entire item view
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onBookingClick(bookingList[position])
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookingViewHolder {
         val binding = ItemBookingBinding.inflate(
@@ -33,24 +44,16 @@ class BookingAdapter(
 
         holder.binding.apply {
             bookingTitle.text = booking.title
-            bookingGuests.text = "${booking.guests} Guests" // Added "Guests" text for clarity
             bookingDate.text = booking.date
             bookingTime.text = booking.time
+            bookingGuests.text = "${booking.guests} guests"
 
-            // FIXED: Switched from Coil to Glide for consistency
             Glide.with(holder.itemView.context)
                 .load(booking.imageUrl)
-                .centerCrop()
+                .transform(CenterCrop())
                 .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_menu_report_image) // Show error icon if loading fails
                 .into(bookingImage)
-
-            cancelButton.setOnClickListener {
-                val context = holder.itemView.context
-                val intent = Intent(context, CancelledActivity::class.java)
-                // Passing the restaurant name so the Cancelled screen knows what was cancelled
-                intent.putExtra("RESTAURANT_NAME", booking.title)
-                context.startActivity(intent)
-            }
         }
     }
 
