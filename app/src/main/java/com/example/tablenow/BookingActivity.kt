@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tablenow.databinding.ActivityBookingBinding
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 
 class BookingActivity : AppCompatActivity() {
@@ -16,45 +19,80 @@ class BookingActivity : AppCompatActivity() {
     private var selectedTime: String? = null
     private var selectedDate: String = ""
 
+    // Firebase
+    private val db = Firebase.firestore
+    private val auth = Firebase.auth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBookingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val restaurantName = intent.getStringExtra("RESTAURANT_NAME") ?: "Restaurant"
-        binding.tvRestaurantName.text = restaurantName
+        val imageUrl = intent.getStringExtra("IMAGE_URL") ?: "" // Get the image passed from details
 
+        binding.tvRestaurantName.text = restaurantName
         binding.btnBack.setOnClickListener { onBackPressed() }
 
-        // Date Logic
+        // Date Setup
         val calendar = Calendar.getInstance()
         selectedDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
-
         binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDate = "$dayOfMonth/${month + 1}/$year"
         }
 
         setupTimeSlots()
 
-        // --- UPDATED VALIDATION LOGIC IS HERE ---
+        // --- BOOKING LOGIC ---
         binding.btnBookNow.setOnClickListener {
             val guestInput = binding.etGuests.text.toString()
-            // Convert text to a number safely. If it's empty or invalid, treat it as 0.
             val guestCount = guestInput.toIntOrNull() ?: 0
+            val user = auth.currentUser
 
-            if (selectedTime == null) {
+            // Validation
+            if (user == null) {
+                Toast.makeText(this, "You must be logged in to book", Toast.LENGTH_SHORT).show()
+                // Optional: Redirect to LoginActivity here
+            } else if (selectedTime == null) {
                 Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show()
             } else if (guestCount < 1) {
-                // This blocks 0, negative numbers, or empty inputs
                 Toast.makeText(this, "Please enter at least 1 guest", Toast.LENGTH_SHORT).show()
             } else {
-                // Success! Proceed to next screen
-                val intent = Intent(this, ConfirmationActivity::class.java)
-                intent.putExtra("RESTAURANT_NAME", restaurantName)
-                intent.putExtra("GUESTS", guestInput)
-                intent.putExtra("TIME", selectedTime)
-                intent.putExtra("DATE", selectedDate)
-                startActivity(intent)
+                // 1. Disable button to prevent double clicks
+                binding.btnBookNow.isEnabled = false
+                binding.btnBookNow.text = "Booking..."
+
+                // 2. Create Data Object
+                val bookingData = hashMapOf(
+                    "userId" to user.uid,
+                    "restaurantName" to restaurantName,
+                    "date" to selectedDate,
+                    "time" to selectedTime,
+                    "guests" to guestInput,
+                    "imageUrl" to imageUrl,
+                    "status" to "confirmed",
+                    "timestamp" to com.google.firebase.Timestamp.now()
+                )
+
+                // 3. Save to Firestore
+                db.collection("bookings")
+                    .add(bookingData)
+                    .addOnSuccessListener { documentReference ->
+                        // Success! Go to confirmation
+                        val intent = Intent(this, ConfirmationActivity::class.java)
+                        intent.putExtra("RESTAURANT_NAME", restaurantName)
+                        intent.putExtra("GUESTS", guestInput)
+                        intent.putExtra("TIME", selectedTime)
+                        intent.putExtra("DATE", selectedDate)
+                        startActivity(intent)
+                        finish() // Close this screen
+                    }
+                    .addOnFailureListener { e ->
+                        // Error
+                        binding.btnBookNow.isEnabled = true
+                        binding.btnBookNow.text = "Book now"
+                        Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
     }
@@ -78,12 +116,10 @@ class BookingActivity : AppCompatActivity() {
                     it.strokeWidth = 3
                     it.strokeColor = colorStroke
                 }
-
                 val selected = clickedBtn as MaterialButton
                 selected.backgroundTintList = colorBlue
                 selected.setTextColor(Color.WHITE)
                 selected.strokeWidth = 0
-
                 selectedTime = selected.text.toString()
             }
         }

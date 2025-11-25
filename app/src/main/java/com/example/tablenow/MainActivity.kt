@@ -2,6 +2,7 @@ package com.example.tablenow
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +16,24 @@ import com.example.tablenow.adapter.InfoCardAdapter
 import com.example.tablenow.databinding.ActivityMainBinding
 import com.example.tablenow.model.InfoCard
 import com.google.android.material.appbar.AppBarLayout
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    // Adapters
+    private lateinit var featuredAdapter: InfoCardAdapter
+    private lateinit var newAdapter: InfoCardAdapter
+
+    // Data Lists
+    private val featuredList = mutableListOf<InfoCard>()
+    private val newList = mutableListOf<InfoCard>()
+
+    // 1. Initialize Firestore
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,26 +42,81 @@ class MainActivity : AppCompatActivity() {
 
         setupToolbarAnimation()
         setupBottomNavigation()
-
-        val data = getMockData()
-        setupFeaturedList(data)
-        setupNewList(data)
         setupCategoryList()
+
+        // 2. Setup Adapters (Empty at first)
+        setupAdapters()
+
+        // 3. Fetch REAL Data from Firestore
+        fetchRestaurants()
+    }
+
+    private fun fetchRestaurants() {
+        // Connect to the "restaurants" collection
+        db.collection("restaurants")
+            .get()
+            .addOnSuccessListener { result ->
+                // Clear lists so we don't duplicate data if this runs twice
+                featuredList.clear()
+                newList.clear()
+
+                for (document in result) {
+                    // Safely get data from Firestore fields
+                    // The strings inside "" must match your Firestore fields EXACTLY
+                    val name = document.getString("name") ?: "Unknown"
+                    val category = document.getString("category") ?: "General"
+                    val rating = document.getString("rating") ?: "0.0"
+                    val imageUrl = document.getString("imageUrl") ?: ""
+                    val isFeatured = document.getBoolean("isFeatured") ?: false
+
+                    // Create the InfoCard object
+                    val restaurant = InfoCard(name, category, rating, imageUrl, isFeatured)
+
+                    // Add to the "New" list (Everything goes here)
+                    newList.add(restaurant)
+
+                    // Add to "Featured" list ONLY if isFeatured is true
+                    if (isFeatured) {
+                        featuredList.add(restaurant)
+                    }
+                }
+
+                // Tell the lists to refresh
+                featuredAdapter.notifyDataSetChanged()
+                newAdapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents.", exception)
+                Toast.makeText(this, "Error loading data", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun setupAdapters() {
+        // Setup Featured RecyclerView
+        featuredAdapter = InfoCardAdapter(featuredList) { infoCard, _, _ -> openDetail(infoCard) }
+        binding.rvFeatured.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvFeatured.adapter = featuredAdapter
+
+        // Setup New RecyclerView
+        newAdapter = InfoCardAdapter(newList) { infoCard, _, _ -> openDetail(infoCard) }
+        binding.rvNew.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvNew.adapter = newAdapter
+    }
+
+    private fun openDetail(infoCard: InfoCard) {
+        val intent = Intent(this, RestaurantDetailActivity::class.java)
+        intent.putExtra("RESTAURANT_NAME", infoCard.name)
+        intent.putExtra("RESTAURANT_IMAGE", infoCard.imageUrl)
+        intent.putExtra("RESTAURANT_RATING", infoCard.rating)
+        startActivity(intent)
     }
 
     private fun setupToolbarAnimation() {
-        // Find the container for the big "Discover" text
         val headerContainer = binding.root.findViewById<View>(R.id.headerExpandedContainer)
-
         binding.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val totalScrollRange = appBarLayout.totalScrollRange
             val percentage = abs(verticalOffset).toFloat() / totalScrollRange.toFloat()
-
-            // 1. Fade OUT the Big Header as you scroll up
             headerContainer.alpha = 1f - percentage
-
-            // 2. Fade IN the Pinned Toolbar Title "TableNow"
-            // We wait until 60% scrolled (0.6f) so it doesn't clutter the screen immediately
             if (percentage > 0.6f) {
                 val fadeInAlpha = (percentage - 0.6f) * 2.5f
                 binding.tvToolbarTitle.alpha = fadeInAlpha
@@ -58,7 +127,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupCategoryList() {
-        // Using standard system icons to ensure it runs without crashing
         val categories = listOf(
             Category("Pizza", android.R.drawable.ic_menu_compass),
             Category("Burger", android.R.drawable.ic_menu_agenda),
@@ -66,29 +134,9 @@ class MainActivity : AppCompatActivity() {
             Category("Greek", android.R.drawable.ic_menu_directions),
             Category("Sushi", android.R.drawable.ic_menu_view)
         )
-
         val adapter = CategoryAdapter(categories)
         binding.rvCategories.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategories.adapter = adapter
-    }
-
-    private fun setupFeaturedList(data: List<InfoCard>) {
-        val adapter = InfoCardAdapter(data) { infoCard, _, _ -> openDetail(infoCard) }
-        binding.rvFeatured.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvFeatured.adapter = adapter
-    }
-
-    private fun setupNewList(data: List<InfoCard>) {
-        val adapter = InfoCardAdapter(data) { infoCard, _, _ -> openDetail(infoCard) }
-        binding.rvNew.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvNew.adapter = adapter
-    }
-
-    private fun openDetail(infoCard: InfoCard) {
-        val intent = Intent(this, RestaurantDetailActivity::class.java)
-        intent.putExtra("RESTAURANT_NAME", infoCard.name)
-        intent.putExtra("RESTAURANT_IMAGE", infoCard.imageUrl)
-        startActivity(intent)
     }
 
     private fun setupBottomNavigation() {
@@ -96,26 +144,22 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home -> true
                 R.id.nav_search -> { Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show(); true }
-                R.id.nav_profile -> { Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show(); true }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, MybookingsActivity::class.java))
+                    true
+                }
                 else -> false
             }
         }
     }
-
-    private fun getMockData(): List<InfoCard> {
-        return listOf(
-            InfoCard("The Gourmet Place", "Italian", "4.8", "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&auto=format&fit=crop&q=60", true),
-            InfoCard("Sushi Central", "Japanese", "4.9", "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=60", true),
-            InfoCard("Burger King", "American", "4.2", "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&auto=format&fit=crop&q=60", true)
-        )
-    }
 }
 
-// --- CATEGORY ADAPTER & MODEL ---
+// --- FIXED CATEGORY ADAPTER (No abstract errors) ---
 
 data class Category(val name: String, val iconRes: Int)
 
 class CategoryAdapter(private val list: List<Category>) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: ImageView = view.findViewById(R.id.ivCategoryIcon)
         val text: TextView = view.findViewById(R.id.tvCategoryName)
