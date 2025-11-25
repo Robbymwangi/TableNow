@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         // Make the "Sign up" part of the text bold and colored
-        val signUpText = "Don\'t have an account? Sign up"
+        val signUpText = "Don't have an account? Sign up"
         val spannableString = SpannableString(signUpText)
 
         val signUpStart = signUpText.indexOf("Sign up")
@@ -70,6 +70,18 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
             // No finish() here, as we might want to come back to LoginActivity from SignUpActivity
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }
     }
 }

@@ -36,18 +36,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupToolbarAnimation() {
-        // Find the specific container in the XML
+        // Find the container for the big "Discover" text
         val headerContainer = binding.root.findViewById<View>(R.id.headerExpandedContainer)
 
         binding.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val totalScrollRange = appBarLayout.totalScrollRange
             val percentage = abs(verticalOffset).toFloat() / totalScrollRange.toFloat()
 
-            // Fade OUT the entire Big Header (TableNow + Discover)
+            // 1. Fade OUT the Big Header as you scroll up
             headerContainer.alpha = 1f - percentage
 
-            // Fade IN the Toolbar Title "TableNow"
-            // We start the fade late (0.6) so it doesn't overlap immediately
+            // 2. Fade IN the Pinned Toolbar Title "TableNow"
+            // We wait until 60% scrolled (0.6f) so it doesn't clutter the screen immediately
             if (percentage > 0.6f) {
                 val fadeInAlpha = (percentage - 0.6f) * 2.5f
                 binding.tvToolbarTitle.alpha = fadeInAlpha
