@@ -14,8 +14,12 @@ class CancelledActivity : AppCompatActivity() {
         binding = ActivityCancelledBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Hide Action Bar
+        supportActionBar?.hide()
+
         binding.homepageButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            // Clear the back stack so they start fresh at Home
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }

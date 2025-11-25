@@ -45,8 +45,7 @@
         android:text="Go to homepage"
         android:textColor="#0D1B7A"
         android:textStyle="bold"
-        app:cornerRadius="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cornerRadius="8dp"        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
