@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,184 +8,213 @@
     android:background="@android:color/white"
     tools:context=".BookingActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="80dp"
-        app:layout_constraintTop_toTopOf="parent"
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_arrow_back_white"
+        app:tint="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bookNowButton">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvPageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Book your table"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
+        android:fontFamily="@font/poppins"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
+        app:layout_constraintStart_toStartOf="@id/btnBack" />
+
+    <TextView
+        android:id="@+id/tvRestaurantName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restaurant Name"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tvPageTitle"
+        app:layout_constraintStart_toStartOf="@id/tvPageTitle" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="100dp"
+        app:layout_constraintTop_toBottomOf="@id/tvRestaurantName"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingHorizontal="20dp">
 
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_back"
-                app:tint="@android:color/black"
-                android:contentDescription="Back" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Book your table"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="16dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Saint Germain Bistro"
-                android:textSize="18sp"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginTop="4dp"/>
-
-            <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginTop="24dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/guestsEditText"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2"
-                    android:inputType="number"
-                    android:labelFor="@+id/guestsEditText"
-                    android:hint="Guests" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
 
-            <RelativeLayout
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Guests"
+                        android:textColor="@android:color/black"
+                        android:fontFamily="@font/poppins"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
+
+                    <EditText
+                        android:id="@+id/etGuests"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input_field"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:text="2"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
-                <TextView
-                    android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_centerVertical="true"/>
-                <Button
-                    android:id="@+id/monthButton"
-                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textColor="@android:color/black"
+                        android:fontFamily="@font/poppins"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <CalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/Theme.AppCompat.Light"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="100dp"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="May"
-                    android:textColor="@android:color/black"
-                    android:background="?attr/selectableItemBackground"
-                    app:icon="@drawable/ic_arrow_drop_down"
-                    app:iconTint="@android:color/black"
-                    app:iconGravity="end"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <GridLayout
-                android:id="@+id/calendarGrid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="7"
-                android:layout_marginTop="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textColor="@android:color/black"
+                        android:fontFamily="@font/poppins"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="12dp"/>
 
-                <TextView android:text="M" style="@style/CalendarDayHeader" />
-                <TextView android:text="T" style="@style/CalendarDayHeader" />
-                <TextView android:text="W" style="@style/CalendarDayHeader" />
-                <TextView android:text="T" style="@style/CalendarDayHeader" />
-                <TextView android:text="F" style="@style/CalendarDayHeader" />
-                <TextView android:text="S" style="@style/CalendarDayHeader" />
-                <TextView android:text="S" style="@style/CalendarDayHeader" />
+                    <GridLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:columnCount="3"
+                        android:rowCount="3">
 
-                <TextView style="@style/CalendarDay" />
-                <TextView style="@style/CalendarDay" />
-                <TextView style="@style/CalendarDay" />
-                <TextView style="@style/CalendarDay" />
-                <TextView style="@style/CalendarDay" />
-                <TextView style="@style/CalendarDay" />
-                <TextView android:text="1" style="@style/CalendarDay" />
-                <TextView android:text="2" style="@style/CalendarDay" />
-                <TextView android:text="3" style="@style/CalendarDay" />
-                <TextView android:text="4" style="@style/CalendarDay" />
-                <TextView android:text="5" style="@style/CalendarDay" />
-                <TextView android:text="6" style="@style/CalendarDay" />
-                <TextView android:text="7" style="@style/CalendarDay" />
-                <TextView android:text="8" style="@style/CalendarDay" />
-                <TextView android:text="9" style="@style/CalendarDay" />
-                <TextView android:text="10" style="@style/CalendarDay" />
-                <TextView android:text="11" style="@style/CalendarDay" />
-                <TextView android:text="12" android:id="@+id/day12" style="@style/CalendarDay" /> <TextView android:text="13" style="@style/CalendarDay" />
-                <TextView android:text="14" style="@style/CalendarDay" />
-                <TextView android:text="15" style="@style/CalendarDay" />
-                <TextView android:text="16" style="@style/CalendarDay" />
-                <TextView android:text="17" style="@style/CalendarDay" />
-                <TextView android:text="18" style="@style/CalendarDay" />
-                <TextView android:text="19" style="@style/CalendarDay" />
-                <TextView android:text="20" style="@style/CalendarDay" />
-                <TextView android:text="21" style="@style/CalendarDay" />
-                <TextView android:text="22" style="@style/CalendarDay" />
-                <TextView android:text="23" style="@style/CalendarDay" />
-                <TextView android:text="24" style="@style/CalendarDay" />
-                <TextView android:text="25" style="@style/CalendarDay" />
-                <TextView android:text="26" style="@style/CalendarDay" />
-                <TextView android:text="27" style="@style/CalendarDay" />
-                <TextView android:text="28" style="@style/CalendarDay" />
-                <TextView android:text="29" style="@style/CalendarDay" />
-                <TextView android:text="30" style="@style/CalendarDay" />
-                <TextView android:text="31" style="@style/CalendarDay" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time1800" android:text="18:00" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
 
-            </GridLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time1900" android:text="19:00" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="24dp"/>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time1930" android:text="19:30" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
 
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/timeButtonLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:flexWrap="wrap"
-                android:layout_marginTop="16dp">
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time2030" android:text="20:30" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
 
-                <Button android:text="18:00" style="@style/TimeButton" />
-                <Button android:text="19:00" style="@style/TimeButton" />
-                <Button android:text="19:30" style="@style/TimeButton" />
-                <Button android:text="20:30" style="@style/TimeButton" />
-                <Button android:text="21:00" style="@style/TimeButton" />
-                <Button android:text="21:30" android:id="@+id/time2130" style="@style/TimeButton" /> <Button android:text="22:00" style="@style/TimeButton" />
-            </com.google.android.flexbox.FlexboxLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time2100" android:text="21:00" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
 
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time2130" android:text="21:30" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/time2200" android:text="22:00" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_margin="4dp" android:textColor="@android:color/black" app:strokeColor="#E0E0E0"/>
+
+                    </GridLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/bookNowButton"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBookNow"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
         android:text="Book now"
-        android:backgroundTint="#00695C"
-        android:textColor="@android:color/white"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poppins"
+        android:backgroundTint="#1A746B"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

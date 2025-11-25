@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     // Firebase Storage (if you host your images in Firebase)
     implementation(libs.firebase.storage.ktx)
-
+    implementation("com.google.android.material:material:1.11.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

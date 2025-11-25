@@ -14,31 +14,26 @@ class ConfirmationActivity : AppCompatActivity() {
         binding = ActivityConfirmationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // --- 1. RECEIVE AND DISPLAY BOOKING DETAILS ---
-        // Get the data that was passed from BookingActivity
-        val guests = intent.getStringExtra("GUESTS")
-        val date = intent.getStringExtra("DATE")
-        val time = intent.getStringExtra("TIME")
+        // --- 1. RECEIVE BOOKING DETAILS ---
+        // We use ?: "..." to provide a default value if the data is missing
+        val guests = intent.getStringExtra("GUESTS") ?: "2"
+        val date = intent.getStringExtra("DATE") ?: "Today"
+        val time = intent.getStringExtra("TIME") ?: "19:00"
 
-        // Create a user-friendly confirmation message
-        val confirmationMessage = "You have successfully booked a table for $guests guests on day $date at $time."
+        // --- 2. DISPLAY MESSAGE ---
+        // Improved Grammar: Removed "on day" to make it sound more natural
+        val confirmationMessage = "You have successfully booked a table for $guests guests on $date at $time."
 
-        // Display the message in your TextView.
-        // **IMPORTANT**: Make sure your TextView in activity_confirmation.xml has the id "confirmationDetailsTextView"
         binding.confirmedText.text = confirmationMessage
 
-        // --- 2. SET UP BUTTON NAVIGATION ---
+        // --- 3. NAVIGATION ---
         binding.homepageButton.setOnClickListener {
-            // Create an intent to go back to the MainActivity
             val intent = Intent(this, MainActivity::class.java)
-            // These flags clear the other activities (Booking, Confirmation) from the back stack.
-            // This provides a clean navigation flow for the user.
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
 
         binding.myBookingsButton.setOnClickListener {
-            // Create an intent to go to the MyBookingsActivity
             val intent = Intent(this, MybookingsActivity::class.java)
             startActivity(intent)
         }

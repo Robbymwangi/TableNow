@@ -2,117 +2,108 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
+    android:layout_marginHorizontal="4dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/bookingImage"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/backgrounds/scenic" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/imageContainer"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/bookingImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:contentDescription="Restaurant Image" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/bookingTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:text="The Gourmet Place"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/poppins"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/imageContainer"
+            app:layout_constraintTop_toTopOf="@id/imageContainer"
+            app:layout_constraintEnd_toStartOf="@id/cancelButton"/>
 
-            <TextView
-                android:id="@+id/bookingTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textColor="@android:color/black"
-                tools:text="Saint Germain Bistro" />
+        <TextView
+            android:id="@+id/bookingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12 May"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:fontFamily="@font/poppins"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="@id/bookingTitle"
+            app:layout_constraintTop_toBottomOf="@id/bookingTitle"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" • "
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toEndOf="@id/bookingDate"
+            app:layout_constraintTop_toTopOf="@id/bookingDate"/>
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_calendar"
-                    app:tint="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/bookingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="19:30"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:fontFamily="@font/poppins"
+            app:layout_constraintStart_toEndOf="@id/separator"
+            app:layout_constraintTop_toTopOf="@id/bookingDate"/>
 
-                <TextView
-                    android:id="@+id/bookingDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@android:color/darker_gray"
-                    tools:text="Thursday, 12 May 2022" />
-            </LinearLayout>
+        <TextView
+            android:id="@+id/bookingGuests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 Guests"
+            android:textSize="14sp"
+            android:textColor="#1A746B"
+            android:fontFamily="@font/poppins"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="@id/bookingTitle"
+            app:layout_constraintTop_toBottomOf="@id/bookingDate"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/cancelButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:tint="@android:color/holo_red_dark"
+            android:contentDescription="Cancel Booking"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_clock"
-                    app:tint="@android:color/darker_gray" />
-
-                <TextView
-                    android:id="@+id/bookingTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@android:color/darker_gray"
-                    tools:text="21:30" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_person"
-                    app:tint="@android:color/darker_gray" />
-
-                <TextView
-                    android:id="@+id/bookingGuests"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@android:color/darker_gray"
-                    tools:text="4 guests" />
-            </LinearLayout>
-
-            <!-- ▼▼▼ THIS IS THE NEW BUTTON ▼▼▼ -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancelButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="8dp"
-                android:text="Cancel Booking"
-                android:textColor="@color/design_default_color_error" />
-            <!-- ▲▲▲ END OF NEW BUTTON ▲▲▲ -->
-
-        </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
