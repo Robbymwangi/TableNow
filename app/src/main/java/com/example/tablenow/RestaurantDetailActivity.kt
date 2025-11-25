@@ -3,7 +3,6 @@ package com.example.tablenow
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.example.tablenow.databinding.ActivityRestaurantDetailBinding
 
 class RestaurantDetailActivity : AppCompatActivity() {
@@ -26,16 +25,11 @@ class RestaurantDetailActivity : AppCompatActivity() {
         binding.restaurantHours.text = "12:00-22:00"
 
         // 3. Load Main Hero Image
-        Glide.with(this)
-            .load(imageUrl)
-            .centerCrop()
-            .into(binding.heroImage)
+        binding.heroImage.loadImage(imageUrl)
 
         // 4. Auto-Generate Menu Images
-        Glide.with(this).load("https://loremflickr.com/600/400/brunch,breakfast")
-            .centerCrop().into(binding.brunchImage)
-        Glide.with(this).load("https://loremflickr.com/600/400/steak,dinner")
-            .centerCrop().into(binding.dinnerImage)
+        binding.brunchImage.loadImage("https://loremflickr.com/600/400/brunch,breakfast")
+        binding.dinnerImage.loadImage("https://loremflickr.com/600/400/steak,dinner")
 
         binding.backButton.setOnClickListener { onBackPressed() }
 

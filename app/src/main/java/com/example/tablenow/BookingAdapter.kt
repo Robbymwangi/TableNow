@@ -3,8 +3,6 @@ package com.example.tablenow
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.tablenow.databinding.ItemBookingBinding
 import com.example.tablenow.model.Booking
 
@@ -48,12 +46,7 @@ class BookingAdapter(
             bookingTime.text = booking.time
             bookingGuests.text = "${booking.guests} guests"
 
-            Glide.with(holder.itemView.context)
-                .load(booking.imageUrl)
-                .transform(CenterCrop())
-                .placeholder(android.R.drawable.ic_menu_gallery)
-                .error(android.R.drawable.ic_menu_report_image) // Show error icon if loading fails
-                .into(bookingImage)
+            bookingImage.loadImage(booking.imageUrl)
         }
     }
 

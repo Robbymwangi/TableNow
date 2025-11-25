@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.example.tablenow.databinding.ActivityBookingDetailsBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -36,11 +35,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         binding.tvBookingDate.text = cleanDate
         binding.tvBookingTime.text = bookingTime
 
-        Glide.with(this)
-            .load(imageUrl)
-            .centerCrop()
-            .placeholder(android.R.drawable.ic_menu_gallery)
-            .into(binding.ivRestaurantImage)
+        binding.ivRestaurantImage.loadImage(imageUrl)
 
         // 3. CANCEL LOGIC (Live Delete)
         binding.btnCancelBooking.setOnClickListener {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tablenow.databinding.ActivityBookingBinding
@@ -36,6 +37,9 @@ class BookingActivity : AppCompatActivity() {
 
         // Date Setup
         val calendar = Calendar.getInstance()
+        // GUARDRAIL: Prevent selecting past dates
+        // This creates a "floor" so users can't scroll back before today
+        binding.calendarView.minDate = System.currentTimeMillis() - 1000 
         selectedDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
         binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDate = "$dayOfMonth/${month + 1}/$year"
@@ -58,9 +62,10 @@ class BookingActivity : AppCompatActivity() {
             } else if (guestCount < 1) {
                 Toast.makeText(this, "Please enter at least 1 guest", Toast.LENGTH_SHORT).show()
             } else {
-                // 1. Disable button to prevent double clicks
+                // 1. SHOW LOADING & DISABLE INTERACTION
+                binding.progressBar.visibility = View.VISIBLE
                 binding.btnBookNow.isEnabled = false
-                binding.btnBookNow.text = "Booking..."
+                binding.btnBookNow.text = "Processing..."
 
                 // 2. Create Data Object
                 val bookingData = hashMapOf(
@@ -79,6 +84,7 @@ class BookingActivity : AppCompatActivity() {
                     .add(bookingData)
                     .addOnSuccessListener { documentReference ->
                         // Success! Go to confirmation
+                        binding.progressBar.visibility = View.GONE
                         val intent = Intent(this, ConfirmationActivity::class.java)
                         intent.putExtra("RESTAURANT_NAME", restaurantName)
                         intent.putExtra("GUESTS", guestInput)
@@ -88,7 +94,8 @@ class BookingActivity : AppCompatActivity() {
                         finish() // Close this screen
                     }
                     .addOnFailureListener { e ->
-                        // Error
+                        // 3. RESET ON FAILURE
+                        binding.progressBar.visibility = View.GONE
                         binding.btnBookNow.isEnabled = true
                         binding.btnBookNow.text = "Book now"
                         Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
